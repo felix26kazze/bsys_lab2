@@ -1,0 +1,17 @@
+
+https://www.geeksforgeeks.org/operating-systems/process-in-operating-system/
+Ein Prozess ist ein Programm welches ausgeführt wird, also aktiv ist. Kurz, aktiver Code.
+Prozesse haben eine bestimmte struktur, die aus bestimmten sektionen Besteht:
+    Stack
+        Temporäre daten wie lokale variablen und parameter
+    Text
+        Der teil der ausgeführt wird
+    Data
+        Externe inhalte und Variablen
+    Heap
+        Arbeitsspeicher der Dynamisch zugewiesen wird
+
+
+https://www.geeksforgeeks.org/operating-systems/thread-in-operating-system/
+Ein Thread ist ein teil von einem Process, ein Process hat mehrere Threads, welche sich die dem Prozess vom Betriebsystem zugewiesenen Resscourcen und vom process ausgeführte daten teilen. Threads arbeiten aber alle eigenständig, haben daher auch eine eigene ID, Variablen und Register mit denen sie arbeiten können und nicht teilen.
+
