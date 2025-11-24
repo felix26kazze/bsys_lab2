@@ -1,7 +1,7 @@
-
+1:
 https://www.geeksforgeeks.org/operating-systems/process-in-operating-system/
 Ein Prozess ist ein Programm welches ausgeführt wird, also aktiv ist. Kurz, aktiver Code.
-Prozesse haben eine bestimmte struktur, die aus bestimmten sektionen Besteht:
+Prozesse haben eine bestimmte struktur, die aus bestimmten sektionen Besteht: 
     Stack
         Temporäre daten wie lokale variablen und parameter
     Text
@@ -11,7 +11,99 @@ Prozesse haben eine bestimmte struktur, die aus bestimmten sektionen Besteht:
     Heap
         Arbeitsspeicher der Dynamisch zugewiesen wird
 
+Prozesse haben diverse zusatzinformationen (Attribute) damit das Betriebsystem diese besser managen kann
+    PID
+        ID des Prozesses, jeder Prozess hat eine eigene und man kann anhand dieser den Prozess eindeutig erkennen
+    Status
+        In welchem status der Prozess sich befindet, läuft er? wartet er? reagiert er nicht?
+    Priorität
+        Hilft dem system zu entscheiden welcher Prozess eher Resscourcen bekommt sollten diese nicht ausreichen, bzw welcher prozess diese zuerst erhält
+    I/O 
+        Information über die input und output geräte die der Prozess verwendet und wie er sie verwendet
+    Files
+        welche files geladen und verwendet werden
+    Resscourcen verbrauch
+        Wie lange der Prozess läuft, welche Resscourcen er benötigt, wieviel CPU Zeit er in anspruch genommen hat
+    RAM Infos
+        Informationen über den resavierten RAM wo daten in den Arbeitsspeicher geladen sind und wie dieser Strukturiert ist
 
+2:
 https://www.geeksforgeeks.org/operating-systems/thread-in-operating-system/
-Ein Thread ist ein teil von einem Process, ein Process hat mehrere Threads, welche sich die dem Prozess vom Betriebsystem zugewiesenen Resscourcen und vom process ausgeführte daten teilen. Threads arbeiten aber alle eigenständig, haben daher auch eine eigene ID, Variablen und Register mit denen sie arbeiten können und nicht teilen.
+Ein Thread ist ein teil von einem Process, ein Process hat mehrere Threads, welche sich die dem Prozess vom Betriebsystem zugewiesenen Resscourcen und vom process ausgeführte daten teilen. Threads arbeiten aber alle eigenständig, haben daher auch eine eigene ID, Variablen und Register mit denen sie arbeiten können und nicht teilen. 
+Ein Prozess kann mehrere Threads haben, dies ist dann multithreading
 
+Vorteile von Threads:
+    Paralellität
+        Threads können paralell voneinander laufen, heißt also das Programm kann schneller ausgeführt werden (multithreading)
+        Der paralelle ablauf erlaubt es mehr aufgaben in deselben Zeit zu erledigen (Higher throughput)
+        Mehrere Threads können unabhängig voneinander verschiedene aufgaben gleichzeitig lösen, z.B. Speichern ohne ein videospiel zu unterbrechen
+    Verbesserte Reaktion
+        Selbst wenn ein Thread gerade beschäftigt ist können andere weiterhin andere aufgaben, z.B. User I/O verarbeiten
+    Einfachere kommunikation
+        Da Threads denselben Arbeitspeicher innerhalb eines Prozesses belegen können sie sehr leicht miteinander kommunizieren
+    Genaure priorisierung
+        Threads haben genauso wie Prozesse eine eigene Priorität, dadurch können wichtigere threads ihre aufgaben erledigen während unwichtigere sich restrescouren nehmen müssen
+    Schneller wechsel
+        Da Threads in einem Prozess denselben speicher verwenden ist es schneller zwischen threads zu springen als zwischen Prozessen
+    Rescourcen teilung
+        Threads reservieren keine eigenen Rescoucen, daher sind sie speichereffizienter als einen neuen Prozess zu starten
+    TCB
+        Thread Control Block: Jeder Thread speichert seinen aktuellen zustand ab, dadurch kann er jeder Zeit pausiert werden falls eine andere wichigere aufgabe anfällt und weitermachen sobald er die notwenige Zeit bekommt
+        
+TCB besteht aus drei wichtigen teilen
+    Stack Space 
+        speichert lokale inhalte ab, z.b. variablen die der Thread benötigt, aber gerade nicht verwendet
+    Register Set
+        Daten die der Thread benötigt und verwendet z.B. zwischenergebnisse
+    Programmzähler 
+        Verfolgt den aktuellen Thread und was er ausführt nach
+
+3:
+ULT's (User level Threads)
+Vorteile:
+    User level Threads sind ausschließlich im Userspace, der Kernel kennt sie nicht
+    ULT's erlauben einen schnellen wechsel da nur wenig inhalt zum wiederherstellen des Threads gespeichert werden muss (TCB)
+    Benötigen keine Systemcalls um erstellt oder gemanaget zu werden
+Nachteile:
+    Wenn ein ULT einen Blockierenden Systemcall ausführt blockiert er auch alle anderen threads und processe
+    Eingeteilt werden ULTs von ihren Prozessen, was ineffizienter sein kann als eine einteilung vom Kernel
+    Hat keinen vollzugriff auf multiprozessoren, da der Prozess und nicht der Kernel die ULTs einteilt
+
+4:
+KLTs (Kernel Level Threads)
+Vorteile:
+    Werden direkt vom Kernel des OS's gemanaget, daher weiß der Kernel von jedem KLT volkommen bescheid
+    Der Kernel managet die Threads unabhängig voneinander, was vollständige pralellisierung durch Multithreading ermöglicht
+    Blockierende Systemcalls können vom kernel umgangen werden, soweit dass auch ein anderer thread desselben Prozesses verwendet werden kann
+    Hat ein besseres load balancing da der Kernel alle threads steuert
+Nachteile:
+    KLTs müssen erst zu ULTs umgewandelt werden bevor von ihnen weggewechselt werden kann, was merkbar langsamer ist
+    Schwerer zu implementieren wegen der hohen anzahl an interaktionen mit dem Kernel
+    Große anzahl an KLTs kann die Kernelgeschwindigkeit merkbar beeinflussen wenn es zu viele werden
+    
+5:
+KLT's sind näher am Kernel, dadurch individuell schneller, aber schwerer zu implementieren und brauchen länger um pausiert zu werden
+ULT's sind näher am Userspace, dadurch sind sie langsamer, können aber jederzeit pausiert werden und brauchen kein wissen über den Kernel um implementiert werdn zu können.
+ULT's werden von ihrern darüberliegenden Prozessen verwaltet und bekommen von ihnen Ressourcen zugewiesen; auch die Arbeitverteilung wird vom Prozess übernommen, was je nach Prozrss ineffizienter sein kann
+KLT's werden direkt vom Kernel gemanaget, heißt auch der Kernel kümmert sich um die Ressoucen zuweisung was meist effizienter ist; allerdings kann der Kernel von KLTs auch überannt werden, was dazu führen kann das dieser ineffizienter und langsamer läuft, was sich unweigerlich auf das gesamte System auswirken wird.
+
+6:
+Ein Thread ist im grundegenommen ein Subprozess. Ein Prozess kann mehrere Subprozesse haben die dann miteinander interagieren können und denselben bereich im arbeitsspeicher reserviert haben
+Prozesse haben immer einen eigenen bereich im arbeitsspeicher reserviert, deswegen tun sie sich auch schwerer miteinander zu interagieren als Threads, dafür kann aber jeder Prozess die Systemrescoucen reservieren, der Subprozess oder Thread ist auf das angewiesen was der Prozess reserviert hat.
+Threads haben aber genau wie Prozesse einen eigenen Programmzähler, ein eigenes Registerset und Stack Space
+
+7 & 8:
+https://www.geeksforgeeks.org/operating-systems/methods-in-interprocess-communication/
+Für IPC (Inter Process communication) gibt es verschiedene verfahren
+        Pipes:
+            einwegkommunikation; ein prozess schreibt in den Arbeitsspeicher, der andere kann davon nur lesen
+        Sockets:
+            Netzwerkkommunikation für Prozesse die auf verschienen Computern laufen, MMORPG z.B. 
+            Sind standardisiert und sind unabhängig von plattform und programmiersprache
+        Shared Memory:
+            Zwei oder mehrere Prozesse / Threads bekommen zugriff auf dieselbe Region im Arbeitsspeicher, sie können information dorthin schreiben und von dort auch lesen
+            es ist vergleichbar mit einer Globalen Variable
+            Zwei Threads desselben Prozesses sind bereits im selben Arbeitspeicher und können über diesen miteinander kommunizieren
+                Damit Thread 2 nicht die Inhalte die Thread 1 verwendet umschreibt gibt es das Semaphores konzept. Greift Thread 1 auf einen speicher zu, ist dieser gesperrt bis der Thread diesen wieder freigibt, spricht Thread 2 kann erst denselben speicher verwenden wenn Thread 1 diesen wieder hergibt.
+        Message Queue: 
+            Dient als überbrückung und verhindert dass Prozesse wie bei shared Memory miteinander verbunden werden; Prozesse können sowohl dorthin schreiben als auch von lesen, bekommen aber die informationen normalerweise vom Betriebsystem und nicht vom Prozess selber übermittelt
